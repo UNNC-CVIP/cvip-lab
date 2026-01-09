@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CVIP Lab | Computer Vision and Intelligent Perception</title>
     
+    <!-- 自动使用学校 Logo 作为浏览器标签页图标 (Favicon) -->
+    <link rel="icon" id="favicon-link" href="uni_log.jpg">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -31,7 +34,7 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- JS-YAML Library (For parsing the data file) -->
+    <!-- JS-YAML Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 
     <style>
@@ -50,10 +53,17 @@
         .card-style { transition: all 0.3s ease; }
         .dark .card-style:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 196, 255, 0.15); border-color: rgba(0, 196, 255, 0.4); }
         html:not(.dark) .card-style:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border-color: #cbd5e1; }
+        
+        /* --- 滚动条美化 --- */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; } /* 浅色模式下更明显的灰色 */
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 深色模式下的滚动条颜色调整，确保在深色卡片上可见 */
+        .dark ::-webkit-scrollbar-thumb { background: #475569; } 
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
         .swiper { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.75rem; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
         .swiper-button-next, .swiper-button-prev { color: #00c4ff; opacity: 0; transition: opacity 0.2s ease; }
@@ -72,10 +82,10 @@
                     <span class="text-2xl font-extrabold text-gray-900 dark:text-white" id="nav-logo">CVIP Lab</span>
                 </div>
                 
-                <!-- Desktop Navigation (Populated by JS) -->
+                <!-- Desktop Navigation -->
                 <div class="hidden md:flex md:ml-10 md:space-x-8" id="desktop-menu"></div>
                 
-                <!-- Right Side: Theme Toggle & Mobile Menu -->
+                <!-- Right Side -->
                 <div class="flex items-center space-x-2">
                     <button id="theme-toggle" class="p-2 rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-200">
                         <svg id="sun-icon" class="hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
@@ -111,7 +121,7 @@
         <section class="max-w-4xl mx-auto py-24 px-4" id="about-section">
             <div class="flex justify-center items-center gap-8 mb-10">
                 <div class="w-32 h-32 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center shadow-lg border border-gray-100 dark:border-gray-700 p-2 overflow-hidden">
-                    <img id="uni-logo" src="" alt="University Logo" class="w-full h-full object-contain rounded-full opacity-90 hover:opacity-100">
+                    <img id="uni-logo" src="" alt="University Logo" class="w-full h-full object-contain opacity-90">
                 </div>
             </div>
             <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl text-center" id="about-title"></h2>
@@ -141,13 +151,27 @@
             </div>
         </section>
 
-        <!-- News Section -->
+        <!-- News Section (Updated with Scroll) -->
         <section id="news" class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 min-h-screen bg-gray-50 dark:bg-transparent">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl text-center mb-12" id="news-title"></h2>
-                <div class="flow-root">
-                    <ul role="list" class="-mb-8" id="news-list"></ul>
+                
+                <!-- 新闻滚动容器 -->
+                <!-- 背景色、圆角、阴影，使其看起来像一个卡片 -->
+                <div class="relative bg-white dark:bg-gray-900/50 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 backdrop-blur-sm overflow-hidden">
+                    
+                    <!-- 滚动区域：max-h-[600px] 限制最大高度，超过则滚动 -->
+                    <div class="max-h-[600px] overflow-y-auto p-8 custom-scrollbar">
+                        <div class="flow-root">
+                            <ul role="list" class="-mb-8" id="news-list"></ul>
+                        </div>
+                    </div>
+
+                    <!-- 底部渐变遮罩 (可选，增加视觉美感) -->
+                    <!-- 这会给底部添加一个渐渐消失的效果，提示用户下面可能还有内容 -->
+                    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-black/20 to-transparent pointer-events-none rounded-b-2xl"></div>
                 </div>
+
             </div>
         </section>
 
@@ -221,6 +245,21 @@
         // Mobile Menu
         mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
+        // Helper: Safe Icon Renderer
+        // Allows using either <svg>...</svg> string OR 'images/icon.png' path in YAML
+        function renderIcon(content) {
+            if (!content) return '';
+            const trimmed = content.trim();
+            // If it starts with <svg, it's an SVG string
+            if (trimmed.startsWith('<svg')) return trimmed;
+            // If it ends with image extension, render as image
+            if (trimmed.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
+                return `<img src="${trimmed}" class="h-6 w-6 object-contain" alt="icon">`;
+            }
+            // Fallback: return as text
+            return trimmed;
+        }
+
         // DATA LOADING AND RENDERING ENGINE
         async function loadContent() {
             try {
@@ -234,11 +273,16 @@
                 
             } catch (e) {
                 console.error(e);
-                alert("Error loading content: " + e.message + "\n\nNote: Browsers block reading local files directly. Use VS Code 'Live Server' or 'python -m http.server'.");
+                alert("Error loading content: " + e.message);
             }
         }
 
         function renderSite(data) {
+            // Update Favicon if provided in YAML
+            if (data.about && data.about.university_logo) {
+               document.getElementById('favicon-link').href = data.about.university_logo;
+            }
+
             // 1. Navigation
             const navContainer = document.getElementById('desktop-menu');
             const mobContainer = document.getElementById('mobile-menu');
@@ -276,7 +320,7 @@
                 const html = `
                 <div class="card-style p-6 rounded-xl bg-white border border-gray-200 dark:bg-dark-card dark:border-dark-border">
                     <div class="flex-shrink-0 mb-4">
-                        ${area.icon_svg}
+                        ${renderIcon(area.icon_svg)}
                     </div>
                     <h4 class="text-xl font-semibold text-gray-900 dark:text-white">${area.title}</h4>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">${area.description}</p>
@@ -328,11 +372,11 @@
                 newsList.insertAdjacentHTML('beforeend', html);
             });
 
-            // 5. Team (Flexible Rendering)
+            // 5. Team
             document.getElementById('team-title').textContent = data.team.title;
             const teamContainer = document.getElementById('team-container');
 
-            // Render Director Special Layout
+            // Render Director
             const director = data.team.director;
             if (director) {
                 const directorHtml = `
@@ -344,7 +388,7 @@
                             <h4 class="mt-4 text-2xl font-semibold text-gray-900 dark:text-white">${director.name}</h4>
                             <p class="text-cyan-600 dark:text-cyan-300 text-lg">${director.role}</p>
                             <div class="mt-6 flex justify-center space-x-4">
-                                ${director.links.map(l => `<a href="${l.url}" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:text-cyan-600 dark:hover:text-cyan-400">${l.icon_svg || 'Link'}</a>`).join('')}
+                                ${director.links.map(l => `<a href="${l.url}" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:text-cyan-600 dark:hover:text-cyan-400">${renderIcon(l.icon_svg)}</a>`).join('')}
                             </div>
                         </div>
                     </div>
@@ -356,7 +400,7 @@
                 teamContainer.insertAdjacentHTML('beforeend', directorHtml);
             }
 
-            // Render Other Groups (Generic Loop)
+            // Render Groups
             data.team.groups.forEach(group => {
                 const membersHtml = group.members.map(m => `
                     <div class="card-style rounded-xl overflow-hidden text-center p-6 bg-white border border-gray-200 dark:bg-dark-card dark:border-dark-border">
@@ -367,7 +411,7 @@
                         ${m.joint ? `<p class="text-xs text-cyan-600 dark:text-cyan-400 font-medium mt-1">${m.joint}</p>` : ''}
                         ${m.desc ? `<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">${m.desc}</p>` : ''}
                         <div class="mt-4 flex justify-center space-x-3">
-                             ${m.links ? m.links.map(l => `<a href="${l.url}" class="text-gray-400 hover:text-cyan-500">${l.icon_svg}</a>`).join('') : ''}
+                             ${m.links ? m.links.map(l => `<a href="${l.url}" class="text-gray-400 hover:text-cyan-500">${renderIcon(l.icon_svg)}</a>`).join('') : ''}
                         </div>
                     </div>
                 `).join('');
@@ -404,7 +448,7 @@
                 document.getElementById('projects-grid').insertAdjacentHTML('beforeend', html);
             });
 
-            // 7. Publications (Flexible)
+            // 7. Publications
             document.getElementById('pubs-title').textContent = data.publications.title;
             const pubsContainer = document.getElementById('publications-container');
             
@@ -445,7 +489,7 @@
                 <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
                         <span class="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
-                           ${item.icon_svg}
+                           ${renderIcon(item.icon_svg)}
                         </span>
                     </div>
                     <div>
